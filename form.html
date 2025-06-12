@@ -3,112 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Register Name</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .form-card {
-      background: #ffffff;
-      padding: 32px 24px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-card h2 {
-      margin-bottom: 24px;
-      font-size: 24px;
-      font-weight: 500;
-      color: #202124;
-      text-align: center;
-    }
-
-    .form-group {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 14px 12px 14px 12px;
-      font-size: 16px;
-      border: 1px solid #dadce0;
-      border-radius: 8px;
-      background-color: transparent;
-      outline: none;
-      transition: border 0.2s ease;
-    }
-
-    .form-group label {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      color: #5f6368;
-      font-size: 14px;
-      background: white;
-      padding: 0 4px;
-      pointer-events: none;
-      transition: 0.2s ease all;
-    }
-
-    .form-group input:focus {
-      border-color: #1a73e8;
-    }
-
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label {
-      top: -10px;
-      left: 8px;
-      font-size: 12px;
-      color: #1a73e8;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      background-color: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #1765cc;
-    }
-
-    @media (max-width: 480px) {
-      .form-card {
-        padding: 24px 16px;
-      }
-
-      .form-card h2 {
-        font-size: 20px;
-      }
-
-      button {
-        font-size: 15px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="form-card">
@@ -126,32 +23,6 @@
     </form>
   </div>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const key = urlParams.get('key'); // Get key from ?key=
-
-    function sendToApp() {
-      const data = {
-        kName: document.getElementById("kName").value,
-        eName: document.getElementById("eName").value
-      };
-
-      if (!key) {
-        alert("❌ Missing key in the URL.");
-        return;
-      }
-
-      fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
-        method: "PUT",
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        alert("✅ Sent to Windows App!");
-        document.getElementById("kName").value = "";
-        document.getElementById("eName").value = "";
-      })
-      .catch(() => alert("❌ Failed to send data. Please try again."));
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
