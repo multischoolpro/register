@@ -1,101 +1,356 @@
+/* Reset and base */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background: #f5f5f5;
+  background: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 25% 25%, #e0f2fe 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #ecfdf5 0%, transparent 50%);
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  color: #2d3748;
 }
 
-.form-card {
+/* Container */
+.container {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Card */
+.card {
   background: #ffffff;
-  padding: 32px 24px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-card h2 {
-  margin-bottom: 24px;
-  font-size: 24px;
-  font-weight: 500;
-  color: #202124;
-  text-align: center;
-}
-
-.form-group {
+  padding: 48px 40px;
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  margin-bottom: 20px;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 14px 12px;
-  font-size: 16px;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  background-color: transparent;
-  outline: none;
-  transition: border 0.2s ease;
-}
-
-.form-group label {
+.card::before {
+  content: '';
   position: absolute;
-  top: 12px;
-  left: 12px;
-  color: #5f6368;
-  font-size: 14px;
-  background: white;
-  padding: 0 4px;
-  pointer-events: none;
-  transition: 0.2s ease all;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4fc08d, #42b883);
+  border-radius: 16px 16px 0 0;
 }
 
-.form-group input:focus {
-  border-color: #1a73e8;
+/* Title */
+.title {
+  font-size: 32px;
+  color: #1a202c;
+  margin-bottom: 40px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
-.form-group input:focus + label,
-.form-group input:not(:placeholder-shown) + label {
-  top: -10px;
-  left: 8px;
-  font-size: 12px;
-  color: #1a73e8;
+/* Input Group */
+.input-group {
+  position: relative;
+  margin-bottom: 28px;
 }
 
-button {
+.input-group input,
+.input-group select {
   width: 100%;
-  padding: 14px;
+  padding: 16px 16px 16px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
   font-size: 16px;
-  background-color: #1a73e8;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #2d3748;
+  font-family: inherit;
+  outline: none;
+  appearance: none;
+}
+
+.input-group select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.input-group label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  color: #718096;
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+  padding: 0 8px;
+  font-weight: 500;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #4fc08d;
+  box-shadow: 0 0 0 3px rgba(79, 192, 141, 0.1);
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group input:valid + label,
+.input-group select:focus + label,
+.input-group select:valid + label {
+  top: -12px;
+  font-size: 14px;
+  color: #4fc08d;
+  font-weight: 600;
+}
+
+.input-group select:valid + label {
+  top: -12px;
+  font-size: 14px;
+  color: #4fc08d;
+  font-weight: 600;
+}
+
+/* Select specific styling */
+.input-group select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234fc08d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.input-group select option {
+  padding: 12px;
+  font-size: 16px;
+  color: #2d3748;
+  background: #ffffff;
+}
+
+/* Button */
+.btn {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #4fc08d;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+  outline: none;
 }
 
-button:hover {
-  background-color: #1765cc;
+.btn:hover:not(.loading) {
+  background: #42b883;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(79, 192, 141, 0.3), 0 4px 6px -2px rgba(79, 192, 141, 0.05);
 }
 
-@media (max-width: 480px) {
-  .form-card {
-    padding: 24px 16px;
-  }
+.btn:active:not(.loading) {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px -1px rgba(79, 192, 141, 0.3), 0 2px 4px -1px rgba(79, 192, 141, 0.05);
+}
 
-  .form-card h2 {
-    font-size: 20px;
-  }
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 192, 141, 0.5);
+}
 
-  button {
-    font-size: 15px;
+/* Success and Error Messages */
+.success-message {
+  background: #f0fff4;
+  color: #22543d;
+  border: 1px solid #9ae6b4;
+  padding: 16px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 500;
+  display: none;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.success-message::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #48bb78;
+  border-radius: 8px 0 0 8px;
+}
+
+.error-message {
+  background: #fed7d7;
+  color: #742a2a;
+  border: 1px solid #feb2b2;
+  padding: 16px 20px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 500;
+  display: none;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.error-message::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #f56565;
+  border-radius: 8px 0 0 8px;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
   }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Loading state */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  background: #9ae6b4;
+  cursor: not-allowed;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Input focus animations */
+.input-group {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-group:focus-within {
+  transform: scale(1.01);
+}
+
+/* Hover effects */
+.input-group input:hover:not(:focus),
+.input-group select:hover:not(:focus) {
+  border-color: #cbd5e0;
+}
+
+/* Validation states */
+.input-group input:invalid:not(:placeholder-shown),
+.input-group select:invalid {
+  border-color: #f56565;
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
+}
+
+.input-group input:invalid:not(:placeholder-shown) + label,
+.input-group select:invalid + label {
+  color: #f56565;
+}
+
+.input-group input:valid:not(:placeholder-shown),
+.input-group select:valid:not([value=""]) {
+  border-color: #48bb78;
+}
+
+.input-group input:valid:not(:placeholder-shown) + label,
+.input-group select:valid:not([value=""]) + label {
+  color: #48bb78;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .card {
+    padding: 32px 24px;
+    margin: 10px;
+  }
+  
+  .title {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+  
+  .input-group {
+    margin-bottom: 24px;
+  }
+}
+
+/* Vue.js inspired accent colors */
+:root {
+  --vue-green: #4fc08d;
+  --vue-green-dark: #42b883;
+  --vue-gray: #2c3e50;
+  --vue-light-gray: #7f8c8d;
+}
+
+/* Custom scrollbar for select dropdown */
+.input-group select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.input-group select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.input-group select::-webkit-scrollbar-thumb {
+  background: var(--vue-green);
+  border-radius: 4px;
+}
+
+.input-group select::-webkit-scrollbar-thumb:hover {
+  background: var(--vue-green-dark);
 }

@@ -1,28 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Register Name</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="form-card">
-    <h2>Register Name</h2>
-    <form onsubmit="sendToApp(); return false;">
-      <div class="form-group">
-        <input id="kName" placeholder=" " required />
-        <label for="kName">Khmer Name</label>
+  <div class="container">
+    <div class="card">
+      <h2 class="title">Student Registration</h2>
+      
+      <div id="successMessage" class="success-message">
+        ✅ Successfully sent to Windows App!
       </div>
-      <div class="form-group">
-        <input id="eName" placeholder=" " required />
-        <label for="eName">English Name</label>
+      
+      <div id="errorMessage" class="error-message">
+        ❌ Failed to send data. Please try again.
       </div>
-      <button type="submit">Send to Windows</button>
-    </form>
-  </div>
+      
+      <form id="registrationForm">
+        <div class="input-group">
+          <input id="kName" type="text" required placeholder=" " />
+          <label for="kName">Khmer Name</label>
+        </div>
+        
+        <div class="input-group">
+          <input id="eName" type="text" required placeholder=" " />
+          <label for="eName">English Name</label>
+        </div>
+        
+        <div class="input-group">
+          <select id="gender" required>
+            <option value="" disabled selected></option>
+            <option value="ស្រី">ស្រី</option>
+            <option value="ប្រុស">ប្រុស</option>
+          </select>
+          <label for="gender">Gender</label>
+        </div>
 
+        <button type="submit" class="btn" id="submitBtn">
+          Send to App
+        </button>
+      </form>
+    </div>
+  </div>
+  
   <script src="script.js"></script>
 </body>
 </html>
