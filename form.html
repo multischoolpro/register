@@ -1,21 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Send Name to Windows App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <title>Register Name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Khmer&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #9face6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <h2>Register Name</h2>
-  <form onsubmit="sendToApp(); return false;">
-    Khmer Name: <input id="kName"><br><br>
-    English Name: <input id="eName"><br><br>
-    <button type="submit">Send to Windows</button>
-  </form>
+
+  <div class="form-container">
+    <h2>📋 Register Name</h2>
+    <form onsubmit="sendToApp(); return false;">
+      <label for="kName">Khmer Name</label>
+      <input id="kName" placeholder="ឧ. សុខ ស្រីនាង" required />
+
+      <label for="eName">English Name</label>
+      <input id="eName" placeholder="e.g. Sok Sreynang" required />
+
+      <button type="submit">🚀 Send to Windows</button>
+    </form>
+  </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const key = urlParams.get('key'); // Get key from ?key=
+    const key = urlParams.get('key'); // Optional: for advanced usage
 
     function sendToApp() {
       const data = {
@@ -23,10 +92,14 @@
         eName: document.getElementById("eName").value
       };
 
-      fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
+      fetch("https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/.json", {
         method: "PUT",
         body: JSON.stringify(data)
-      }).then(() => alert("Sent to App!"));
+      }).then(() => {
+        alert("✅ Sent to Windows App!");
+        document.getElementById("kName").value = "";
+        document.getElementById("eName").value = "";
+      });
     }
   </script>
 </body>
