@@ -17,6 +17,12 @@ function sendToApp() {
   const kNameInput = document.getElementById('kName');
   const eNameInput = document.getElementById('eName');
   
+  // Check if key parameter exists
+  if (!key) {
+    alert('❌ No key parameter found in URL. Please add ?key=yourkey to the URL');
+    return;
+  }
+  
   // Show loading state
   submitBtn.classList.add('loading');
   submitBtn.disabled = true;
@@ -27,12 +33,9 @@ function sendToApp() {
     eName: eNameInput.value
   };
   
-  fetch("https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/.json", {
+  fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
     method: "PUT",
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    body: JSON.stringify(data)
   })
   .then(response => {
     if (!response.ok) {
