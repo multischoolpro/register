@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Send Name to Windows App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h2>Register Name</h2>
+  <form onsubmit="sendToApp(); return false;">
+    Khmer Name: <input id="kName"><br><br>
+    English Name: <input id="eName"><br><br>
+    <button type="submit">Send to Windows</button>
+  </form>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const key = urlParams.get('key'); // Get key from ?key=
+
+    function sendToApp() {
+      const data = {
+        kName: document.getElementById("kName").value,
+        eName: document.getElementById("eName").value
+      };
+
+      fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
+        method: "PUT",
+        body: JSON.stringify(data)
+      }).then(() => alert("Sent to App!"));
+    }
+  </script>
+</body>
+</html>
