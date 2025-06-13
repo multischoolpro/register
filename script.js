@@ -403,35 +403,35 @@ async function sendToApp() {
     dob: document.getElementById("dob").value,
     studentPhone: document.getElementById("studentPhone").value.trim(),
     previousSchool: document.getElementById("previousSchool").value.trim(),
-    hasRegisteredBefore: hasRegisteredBefore,
-    timestamp: new Date().toISOString(), // Client-side timestamp
+    // --- CRITICAL FIX: Add hasRegisteredBefore to the data object ---
+    hasRegisteredBefore: hasRegisteredBefore, // <--- This line was missing!
+    timestamp: new Date().toISOString(),
     // Initialize parent and address fields as empty strings or null
-    // They will be populated below if hasRegisteredBefore is false
     fatherName: "",
     fatherPhone: "",
     fatherJob: "",
     motherName: "",
     motherPhone: "",
     motherJob: "",
-    province: "", // Note: renamed from parentProvince for simplicity
-    district: "", // Note: renamed from parentDistrict
-    commune: "", // Note: renamed from parentCommune
-    village: "", // Note: renamed from parentVillage
+    province: "",
+    district: "",
+    commune: "",
+    village: "",
     email: ""
 };
 
-// If the user has NOT registered before, populate all parent and address fields directly
-if (!hasRegisteredBefore) {
+// This block is correct and will populate the above fields if 'No' was clicked
+if (!hasRegisteredBefore) { // This condition is based on the global 'hasRegisteredBefore'
     studentData.fatherName = document.getElementById("fatherName").value.trim();
     studentData.fatherPhone = document.getElementById("fatherPhone").value.trim();
     studentData.fatherJob = document.getElementById("fatherJob").value.trim();
     studentData.motherName = document.getElementById("motherName").value.trim();
     studentData.motherPhone = document.getElementById("motherPhone").value.trim();
     studentData.motherJob = document.getElementById("motherJob").value.trim();
-    studentData.province = document.getElementById("parentProvince").value.trim(); // Renamed in JS for consistency
-    studentData.district = document.getElementById("parentDistrict").value.trim(); // Renamed
-    studentData.commune = document.getElementById("parentCommune").value.trim(); // Renamed
-    studentData.village = document.getElementById("parentVillage").value.trim(); // Renamed
+    studentData.province = document.getElementById("parentProvince").value.trim();
+    studentData.district = document.getElementById("parentDistrict").value.trim();
+    studentData.commune = document.getElementById("parentCommune").value.trim();
+    studentData.village = document.getElementById("parentVillage").value.trim();
     studentData.email = document.getElementById("email").value.trim();
 }
 
