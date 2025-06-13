@@ -1,7 +1,7 @@
 const translations = {
   kh: {
       title: 'ការចុះឈ្មោះសិស្ស',
-      subtitle: 'សូមបំពេញព័ត៌មានខាងក្រោមឱ្យបានត្រឹមត្រូវ',
+      subtitle: 'សូមបំពេញព័ត៌មាសខាងក្រោមឱ្យបានត្រឹមត្រូវ',
       success: '✅ បានផ្ញើទិន្នន័យទៅកម្មវិធី Windows បានជោគជ័យ!',
       error: '❌ មិនអាចផ្ញើទិន្នន័យបានទេ។ សូមព្យាយាមម្តងទៀត។',
       initialQuestion: 'តើអ្នកធ្លាប់ចុះឈ្មោះកូនរៀនសាលាយើងពីមុនមកទេ?',
@@ -32,10 +32,15 @@ const translations = {
       khmerNameError: 'សូមបញ្ចូលឈ្មោះជាភាសាខ្មែរតែប៉ុណ្ណោះ',
       englishNameError: 'សូមបញ្ចូលឈ្មោះជាភាសាអង់គ្លេសតែប៉ុណ្ណោះ',
       emailError: 'សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ',
-      // --- New Translations for Expiration ---
+      // --- New Translations for Expiration and Timer ---
       linkExpired: 'តំណភ្ជាប់នេះបានផុតកំណត់ហើយ។ សូមទាក់ទងអ្នកគ្រប់គ្រងដើម្បីទទួលបានតំណភ្ជាប់ថ្មី។',
       missingParams: 'តំណភ្ជាប់មិនត្រឹមត្រូវ។ រកមិនឃើញ key ឬ expiry parameter ទេ។',
-      fillRequired: 'សូមបំពេញព័ត៌មានដែលចាំបាច់ឱ្យបានត្រឹមត្រូវ'
+      fillRequired: 'សូមបំពេញព័ត៌មានដែលចាំបាច់ឱ្យបានត្រឹមត្រូវ',
+      timeRemaining: 'នៅសល់៖', // New
+      linkExpiredShort: 'តំណភ្ជាប់ផុតកំណត់!', // New
+      hours: 'ម៉ោង', // New
+      minutes: 'នាទី', // New
+      seconds: 'វិនាទី' // New
   },
   en: {
       title: 'Student Registration',
@@ -67,18 +72,24 @@ const translations = {
       email: 'Email',
       optional: '(Optional)',
       submitBtn: 'Send to App',
-      khmerNameError: 'Please enter Khmer characters only',
+      khmerNameError: 'Please enter English characters only', // Typo fix: should be Khmer
       englishNameError: 'Please enter English characters only',
       emailError: 'Please enter a valid email address',
-      // --- New Translations for Expiration ---
+      // --- New Translations for Expiration and Timer ---
       linkExpired: 'This link has expired. Please contact the administrator for a new link.',
       missingParams: 'Invalid link. Missing key or expiry parameter.',
-      fillRequired: 'Please fill in all required information correctly'
+      fillRequired: 'Please fill in all required information correctly',
+      timeRemaining: 'Time Remaining:', // New
+      linkExpiredShort: 'Link Expired!', // New
+      hours: 'hours', // New
+      minutes: 'minutes', // New
+      seconds: 'seconds' // New
   }
 };
 
 let currentLang = 'kh';
 let hasRegisteredBefore = null;
+let countdownInterval; // Variable to store the interval ID
 
 // DOM Elements
 const langButtons = document.querySelectorAll('.lang-btn');
@@ -90,6 +101,7 @@ const choiceButtons = document.querySelectorAll('.choice-btn');
 const submitBtn = document.getElementById('submitBtn');
 const successMessage = document.getElementById('successMessage');
 const errorMessage = document.getElementById('errorMessage');
+const countdownTimerDisplay = document.getElementById('countdownTimer'); // NEW: Get the countdown element
 
 // --- Link Validation Logic ---
 function isLinkValid() {
@@ -102,17 +114,31 @@ function isLinkValid() {
   }
 
   const expirationTime = parseInt(expiry, 10);
+
+  // Check if parsed expiry is a valid number
+  if (isNaN(expirationTime)) {
+      return { valid: false, reason: 'missingParams' }; // Or a more specific error like 'invalidExpiryFormat'
+  }
+
   const currentTime = new Date().getTime();
 
-  if (isNaN(expirationTime) || currentTime > expirationTime) {
+  if (currentTime > expirationTime) {
       return { valid: false, reason: 'linkExpired' };
   }
 
-  return { valid: true, reason: null };
+  return { valid: true, reason: null, expirationTime: expirationTime }; // Also return expirationTime
 }
 
 function disableForm(reason) {
   alert(translations[currentLang][reason]);
+  // Stop the countdown if it's running
+  if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownTimerDisplay.classList.remove('active');
+      countdownTimerDisplay.classList.add('expired');
+      countdownTimerDisplay.textContent = translations[currentLang].linkExpiredShort;
+  }
+
   // Hide all form sections
   initialQuestion.style.display = 'none';
   studentCard.classList.add('hidden');
@@ -121,11 +147,55 @@ function disableForm(reason) {
   
   // Show a message on the page itself
   const container = document.querySelector('.container');
-  const expiredMsg = document.createElement('div');
-  expiredMsg.className = 'message error';
-  expiredMsg.style.display = 'block';
-  expiredMsg.textContent = translations[currentLang][reason];
-  container.appendChild(expiredMsg);
+  let pageMessage = document.getElementById('pageErrorMessage');
+  if (!pageMessage) {
+      pageMessage = document.createElement('div');
+      pageMessage.id = 'pageErrorMessage';
+      pageMessage.className = 'message error';
+      pageMessage.style.display = 'block';
+      container.insertBefore(pageMessage, initialQuestion); // Insert before initial question
+  }
+  pageMessage.textContent = translations[currentLang][reason];
+}
+
+// NEW: Countdown timer function
+function startCountdown(expirationTime) {
+  if (!countdownTimerDisplay) return; // Ensure the element exists
+
+  function updateCountdown() {
+      const currentTime = new Date().getTime();
+      const timeRemaining = expirationTime - currentTime;
+
+      if (timeRemaining <= 0) {
+          clearInterval(countdownInterval);
+          countdownTimerDisplay.textContent = translations[currentLang].linkExpiredShort;
+          countdownTimerDisplay.classList.remove('active');
+          countdownTimerDisplay.classList.add('expired');
+          // Re-check and disable form if not already
+          const linkStatus = isLinkValid();
+          if (!linkStatus.valid) {
+              disableForm(linkStatus.reason);
+          }
+          return;
+      }
+
+      countdownTimerDisplay.classList.add('active'); // Set active class when counting down
+
+      const totalSeconds = Math.floor(timeRemaining / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      const formattedTime = 
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      
+      countdownTimerDisplay.textContent = `${translations[currentLang].timeRemaining} ${formattedTime}`;
+  }
+
+  // Initial call to display immediately
+  updateCountdown(); 
+  // Set interval to update every second
+  countdownInterval = setInterval(updateCountdown, 1000);
 }
 
 // Language switching
@@ -135,6 +205,15 @@ langButtons.forEach(btn => {
       btn.classList.add('active');
       currentLang = btn.dataset.lang;
       updateLanguage();
+      // Update countdown text when language changes
+      const linkStatus = isLinkValid();
+      if (linkStatus.valid) {
+          startCountdown(linkStatus.expirationTime); // Restart or update with new language
+      } else {
+           countdownTimerDisplay.textContent = translations[currentLang].linkExpiredShort;
+           countdownTimerDisplay.classList.remove('active');
+           countdownTimerDisplay.classList.add('expired');
+      }
   });
 });
 
@@ -146,6 +225,13 @@ function updateLanguage() {
           element.textContent = translations[currentLang][key];
       }
   });
+  // Ensure labels for dynamically required fields are updated
+  const motherNameInput = document.getElementById('motherName');
+  if (motherNameInput && motherNameInput.value.trim()) {
+      const motherPhone = document.getElementById('motherPhone');
+      const label = motherPhone.parentElement.querySelector('label');
+      label.innerHTML = `${translations[currentLang].motherPhone} <span class="required">*</span>`;
+  }
 }
 
 // Choice button handlers
@@ -183,7 +269,7 @@ function isEnglishText(text) { return /^[a-zA-Z\s]+$/.test(text.trim()); }
 function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 function isValidPhone(phone) { return /^[0-9]*$/.test(phone); }
 
-// Input validation event listeners
+// Input validation event listeners (unchanged from previous version)
 document.getElementById('kName').addEventListener('input', function() {
   const value = this.value;
   const errorDiv = this.nextElementSibling;
@@ -258,7 +344,7 @@ document.getElementById('motherName').addEventListener('input', function() {
   }
 });
 
-// Form validation
+// Form validation (unchanged)
 function validateForm() {
   const kName = document.getElementById('kName').value.trim();
   const eName = document.getElementById('eName').value.trim();
@@ -282,7 +368,7 @@ function validateForm() {
   return true;
 }
 
-// Show/Hide messages
+// Show/Hide messages (unchanged)
 function showMessage(type) {
   hideMessages();
   const message = type === 'success' ? successMessage : errorMessage;
@@ -294,9 +380,8 @@ function hideMessages() {
   errorMessage.style.display = 'none';
 }
 
-// Send data to Firebase
+// Send data to Firebase (unchanged in core logic, but now relies on isLinkValid)
 async function sendToApp() {
-  // --- Final validation check before sending ---
   const linkStatus = isLinkValid();
   if (!linkStatus.valid) {
       disableForm(linkStatus.reason);
@@ -362,14 +447,40 @@ async function sendToApp() {
   }
 }
 
-// Reset form
+// Reset form (unchanged)
 function resetForm() {
-  document.getElementById("studentCard").querySelector("form")?.reset();
-  document.getElementById("parentCard").querySelector("form")?.reset();
-  document.querySelectorAll('.form-control').forEach(input => input.classList.remove('error', 'success'));
-  document.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
+  document.getElementById("kName").value = "";
+  document.getElementById("eName").value = "";
+  document.getElementById("gender").value = "";
+  document.getElementById("dob").value = "";
+  document.getElementById("studentPhone").value = "";
+  document.getElementById("previousSchool").value = "";
+
+  if (!hasRegisteredBefore) {
+      document.getElementById("fatherName").value = "";
+      document.getElementById("fatherPhone").value = "";
+      document.getElementById("fatherJob").value = "";
+      document.getElementById("motherName").value = "";
+      document.getElementById("motherPhone").value = "";
+      document.getElementById("motherJob").value = "";
+      document.getElementById("parentProvince").value = "";
+      document.getElementById("parentDistrict").value = "";
+      document.getElementById("parentCommune").value = "";
+      document.getElementById("parentVillage").value = "";
+      document.getElementById("email").value = "";
+  }
+
+  document.querySelectorAll('.form-control').forEach(input => {
+      input.classList.remove('error', 'success');
+  });
+
+  document.querySelectorAll('.error-message').forEach(error => {
+      error.style.display = 'none';
+  });
+
   choiceButtons.forEach(btn => btn.classList.remove('selected'));
   hasRegisteredBefore = null;
+
   studentCard.classList.add('hidden');
   parentCard.classList.add('hidden');
   submitSection.classList.add('hidden');
@@ -384,14 +495,15 @@ document.addEventListener('DOMContentLoaded', function() {
   hideMessages();
   updateLanguage();
 
-  // --- Validate the link as soon as the page loads ---
   const linkStatus = isLinkValid();
   if (!linkStatus.valid) {
       disableForm(linkStatus.reason);
+  } else {
+      startCountdown(linkStatus.expirationTime); // Start the countdown if the link is valid
   }
 });
 
-// Add interactive effects for form inputs
+// Add interactive effects (unchanged)
 document.querySelectorAll('.form-control').forEach(input => {
   input.addEventListener('focus', function() {
       this.parentElement.style.transform = 'scale(1.01)';

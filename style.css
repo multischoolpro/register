@@ -334,3 +334,30 @@ body {
       margin-bottom: 24px;
   }
 }
+
+/* Add this to your style.css */
+
+.countdown-timer {
+  margin-top: 15px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #d93025; /* Red color for urgency */
+  text-align: center;
+  padding: 8px 0;
+  border: 1px dashed #d93025;
+  border-radius: 4px;
+  background-color: #fce8e6; /* Light red background */
+}
+
+/* Style for when the timer is active vs. expired */
+.countdown-timer.active {
+  color: #1a73e8; /* Blue when active */
+  border-color: #1a73e8;
+  background-color: #e8f0fe;
+}
+
+.countdown-timer.expired {
+  color: #d93025;
+  border-color: #d93025;
+  background-color: #fce8e6;
+}
