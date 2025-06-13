@@ -363,7 +363,7 @@ function validateForm() {
       const email = document.getElementById('email').value.trim();
       if (!fatherName && !motherName) return false;
       if (motherName && !motherPhone) return false;
-      if (!province || !district || !commune || !village || !email || !validateEmail(email)) return false;
+      if (!province || !district || !commune ) return false;
   }
   return true;
 }
