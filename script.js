@@ -396,34 +396,43 @@ async function sendToApp() {
   submitBtn.classList.add('loading');
   submitBtn.disabled = true;
 
-// This part of your code is already correct
-const studentData = {
-  kName: document.getElementById("kName").value.trim(),
-  eName: document.getElementById("eName").value.trim(),
-  gender: document.getElementById("gender").value,
-  dob: document.getElementById("dob").value,
-  studentPhone: document.getElementById("studentPhone").value.trim(),
-  previousSchool: document.getElementById("previousSchool").value.trim(),
-  hasRegisteredBefore: hasRegisteredBefore,
-  timestamp: new Date().toISOString()
+  const studentData = {
+    kName: document.getElementById("kName").value.trim(),
+    eName: document.getElementById("eName").value.trim(),
+    gender: document.getElementById("gender").value,
+    dob: document.getElementById("dob").value,
+    studentPhone: document.getElementById("studentPhone").value.trim(),
+    previousSchool: document.getElementById("previousSchool").value.trim(),
+    hasRegisteredBefore: hasRegisteredBefore,
+    timestamp: new Date().toISOString(), // Client-side timestamp
+    // Initialize parent and address fields as empty strings or null
+    // They will be populated below if hasRegisteredBefore is false
+    fatherName: "",
+    fatherPhone: "",
+    fatherJob: "",
+    motherName: "",
+    motherPhone: "",
+    motherJob: "",
+    province: "", // Note: renamed from parentProvince for simplicity
+    district: "", // Note: renamed from parentDistrict
+    commune: "", // Note: renamed from parentCommune
+    village: "", // Note: renamed from parentVillage
+    email: ""
 };
 
+// If the user has NOT registered before, populate all parent and address fields directly
 if (!hasRegisteredBefore) {
-  studentData.parentInfo = {
-      fatherName: document.getElementById("fatherName").value.trim(),
-      fatherPhone: document.getElementById("fatherPhone").value.trim(),
-      fatherJob: document.getElementById("fatherJob").value.trim(),
-      motherName: document.getElementById("motherName").value.trim(),
-      motherPhone: document.getElementById("motherPhone").value.trim(),
-      motherJob: document.getElementById("motherJob").value.trim(),
-      address: {
-          province: document.getElementById("parentProvince").value.trim(),
-          district: document.getElementById("parentDistrict").value.trim(),
-          commune: document.getElementById("parentCommune").value.trim(),
-          village: document.getElementById("parentVillage").value.trim()
-      },
-      email: document.getElementById("email").value.trim()
-  };
+    studentData.fatherName = document.getElementById("fatherName").value.trim();
+    studentData.fatherPhone = document.getElementById("fatherPhone").value.trim();
+    studentData.fatherJob = document.getElementById("fatherJob").value.trim();
+    studentData.motherName = document.getElementById("motherName").value.trim();
+    studentData.motherPhone = document.getElementById("motherPhone").value.trim();
+    studentData.motherJob = document.getElementById("motherJob").value.trim();
+    studentData.province = document.getElementById("parentProvince").value.trim(); // Renamed in JS for consistency
+    studentData.district = document.getElementById("parentDistrict").value.trim(); // Renamed
+    studentData.commune = document.getElementById("parentCommune").value.trim(); // Renamed
+    studentData.village = document.getElementById("parentVillage").value.trim(); // Renamed
+    studentData.email = document.getElementById("email").value.trim();
 }
 
 const key = new URLSearchParams(window.location.search).get('key');
