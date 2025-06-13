@@ -396,59 +396,62 @@ async function sendToApp() {
   submitBtn.classList.add('loading');
   submitBtn.disabled = true;
 
-  const studentData = {
-      kName: document.getElementById("kName").value.trim(),
-      eName: document.getElementById("eName").value.trim(),
-      gender: document.getElementById("gender").value,
-      dob: document.getElementById("dob").value,
-      studentPhone: document.getElementById("studentPhone").value.trim(),
-      previousSchool: document.getElementById("previousSchool").value.trim(),
-      hasRegisteredBefore: hasRegisteredBefore,
-      timestamp: new Date().toISOString()
+// This part of your code is already correct
+const studentData = {
+  kName: document.getElementById("kName").value.trim(),
+  eName: document.getElementById("eName").value.trim(),
+  gender: document.getElementById("gender").value,
+  dob: document.getElementById("dob").value,
+  studentPhone: document.getElementById("studentPhone").value.trim(),
+  previousSchool: document.getElementById("previousSchool").value.trim(),
+  hasRegisteredBefore: hasRegisteredBefore,
+  timestamp: new Date().toISOString()
+};
+
+if (!hasRegisteredBefore) {
+  studentData.parentInfo = {
+      fatherName: document.getElementById("fatherName").value.trim(),
+      fatherPhone: document.getElementById("fatherPhone").value.trim(),
+      fatherJob: document.getElementById("fatherJob").value.trim(),
+      motherName: document.getElementById("motherName").value.trim(),
+      motherPhone: document.getElementById("motherPhone").value.trim(),
+      motherJob: document.getElementById("motherJob").value.trim(),
+      address: {
+          province: document.getElementById("parentProvince").value.trim(),
+          district: document.getElementById("parentDistrict").value.trim(),
+          commune: document.getElementById("parentCommune").value.trim(),
+          village: document.getElementById("parentVillage").value.trim()
+      },
+      email: document.getElementById("email").value.trim()
   };
-
-  if (!hasRegisteredBefore) {
-      studentData.parentInfo = {
-          fatherName: document.getElementById("fatherName").value.trim(),
-          fatherPhone: document.getElementById("fatherPhone").value.trim(),
-          fatherJob: document.getElementById("fatherJob").value.trim(),
-          motherName: document.getElementById("motherName").value.trim(),
-          motherPhone: document.getElementById("motherPhone").value.trim(),
-          motherJob: document.getElementById("motherJob").value.trim(),
-          address: {
-              province: document.getElementById("parentProvince").value.trim(),
-              district: document.getElementById("parentDistrict").value.trim(),
-              commune: document.getElementById("parentCommune").value.trim(),
-              village: document.getElementById("parentVillage").value.trim()
-          },
-          email: document.getElementById("email").value.trim()
-      };
-  }
-
-  const key = new URLSearchParams(window.location.search).get('key');
-  try {
-      const response = await fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
-          method: "PUT",
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(studentData)
-      });
-      if (response.ok) {
-          showMessage('success');
-          resetForm();
-      } else {
-          throw new Error('Network response was not ok');
-      }
-  } catch (error) {
-      console.error('Error:', error);
-      showMessage('error');
-  } finally {
-      submitBtn.classList.remove('loading');
-      submitBtn.disabled = false;
-  }
 }
 
-// Reset form (unchanged)
+const key = new URLSearchParams(window.location.search).get('key');
+try {
+  const response = await fetch(`https://temp-register-student-default-rtdb.asia-southeast1.firebasedatabase.app/forms/${key}.json`, {
+      method: "PUT",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(studentData)
+  });
+  if (response.ok) {
+      showMessage('success');
+      resetForm();
+  } else {
+      throw new Error('Network response was not ok');
+  }
+} catch (error) {
+  console.error('Error:', error);
+  showMessage('error');
+} finally {
+  submitBtn.classList.remove('loading');
+  submitBtn.disabled = false;
+}
+
+
+// --- FIXED CODE ---
+// This function is corrected to always reset all form fields.
 function resetForm() {
+  // Reset student form fields
   document.getElementById("kName").value = "";
   document.getElementById("eName").value = "";
   document.getElementById("gender").value = "";
@@ -456,19 +459,22 @@ function resetForm() {
   document.getElementById("studentPhone").value = "";
   document.getElementById("previousSchool").value = "";
 
-  if (!hasRegisteredBefore) {
-      document.getElementById("fatherName").value = "";
-      document.getElementById("fatherPhone").value = "";
-      document.getElementById("fatherJob").value = "";
-      document.getElementById("motherName").value = "";
-      document.getElementById("motherPhone").value = "";
-      document.getElementById("motherJob").value = "";
-      document.getElementById("parentProvince").value = "";
-      document.getElementById("parentDistrict").value = "";
-      document.getElementById("parentCommune").value = "";
-      document.getElementById("parentVillage").value = "";
-      document.getElementById("email").value = "";
-  }
+  // Always reset parent form fields to prevent stale data
+  document.getElementById("fatherName").value = "";
+  document.getElementById("fatherPhone").value = "";
+  document.getElementById("fatherJob").value = "";
+  document.getElementById("motherName").value = "";
+  document.getElementById("motherPhone").value = "";
+  document.getElementById("motherJob").value = "";
+  document.getElementById("parentProvince").value = "";
+  document.getElementById("parentDistrict").value = "";
+  document.getElementById("parentCommune").value = "";
+  document.getElementById("parentVillage").value = "";
+  document.getElementById("email").value = "";
+
+  // The rest of your reset logic will continue here
+  // (e.g., removing 'error'/'success' classes, hiding cards, etc.)
+}
 
   document.querySelectorAll('.form-control').forEach(input => {
       input.classList.remove('error', 'success');
