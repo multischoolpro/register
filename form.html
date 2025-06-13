@@ -1,51 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Registration</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hanuman&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h2 class="title">Student Registration</h2>
-      
-      <div id="successMessage" class="success-message">
-        ✅ Successfully sent to Windows App!
-      </div>
-      
-      <div id="errorMessage" class="error-message">
-        ❌ Failed to send data. Please try again.
-      </div>
-      
-      <form id="registrationForm">
-        <div class="input-group">
-          <input id="kName" type="text" required placeholder=" " />
-          <label for="kName">Khmer Name</label>
-        </div>
-        
-        <div class="input-group">
-          <input id="eName" type="text" required placeholder=" " />
-          <label for="eName">English Name</label>
-        </div>
-        
-        <div class="input-group">
-          <select id="gender" required>
-            <option value="" disabled selected></option>
-            <option value="ស្រី">ស្រី</option>
-            <option value="ប្រុស">ប្រុស</option>
-          </select>
-          <label for="gender">Gender</label>
+    <div class="language-switcher">
+        <button class="lang-btn active" data-lang="kh">ខ្មែរ</button>
+        <button class="lang-btn" data-lang="en">English</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">📚</div>
+            <h1 class="title" data-text="title">ការចុះឈ្មោះសិស្ស</h1>
+            <p class="subtitle" data-text="subtitle">សូមបំពេញព័ត៌មានខាងក្រោមឱ្យបានត្រឹមត្រូវ</p>
         </div>
 
-        <button type="submit" class="btn" id="submitBtn">
-          Send to App
-        </button>
-      </form>
+        <div id="successMessage" class="message success">
+            <span data-text="success">✅ បានផ្ញើទិន្នន័យទៅកម្មវិធី Windows បានជោគជ័យ!</span>
+        </div>
+
+        <div id="errorMessage" class="message error">
+            <span data-text="error">❌ មិនអាចផ្ញើទិន្នន័យបានទេ។ សូមព្យាយាមម្តងទៀត។</span>
+        </div>
+
+        <!-- Initial Question -->
+        <div id="initialQuestion" class="question-card">
+            <h2 class="question-title" data-text="initialQuestion">តើអ្នកធ្លាប់ចុះឈ្មោះកូនរៀនសាលាយើងពីមុនមកទេ?</h2>
+            <div class="choice-buttons">
+                <button class="choice-btn" data-choice="yes" data-text="yes">បាទ/ចាស</button>
+                <button class="choice-btn" data-choice="no" data-text="no">ទេ</button>
+            </div>
+        </div>
+
+        <!-- Student Details -->
+        <div id="studentCard" class="card hidden">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <span class="card-icon">👤</span>
+                    <span data-text="studentDetails">ព័ត៌មានសិស្ស</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="kName" data-text="khmerName">ឈ្មោះជាភាសាខ្មែរ <span class="required">*</span></label>
+                        <input type="text" id="kName" class="form-control" required>
+                        <div class="error-message" data-text="khmerNameError">សូមបញ្ចូលឈ្មោះជាភាសាខ្មែរតែប៉ុណ្ណោះ</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="eName" data-text="englishName">ឈ្មោះជាភាសាអង់គ្លេស <span class="required">*</span></label>
+                        <input type="text" id="eName" class="form-control" required>
+                        <div class="error-message" data-text="englishNameError">សូមបញ្ចូលឈ្មោះជាភាសាអង់គ្លេសតែប៉ុណ្ណោះ</div>
+                    </div>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="gender" data-text="gender">ភេទ <span class="required">*</span></label>
+                        <select id="gender" class="form-control" required>
+                            <option value="">-- សូមជ្រើសរើស --</option>
+                            <option value="ស្រី">ស្រី</option>
+                            <option value="ប្រុស">ប្រុស</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob" data-text="dateOfBirth">ថ្ងៃខែឆ្នាំកំណើត <span class="required">*</span></label>
+                        <input type="date" id="dob" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="studentPhone" data-text="studentPhone">លេខទូរស័ព្ទសិស្ស <span class="optional-label" data-text="optional">(ស្រេច)</span></label>
+                        <input type="tel" id="studentPhone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="previousSchool" data-text="previousSchool">សាលារៀនចាស់ <span class="optional-label" data-text="optional">(ស្រេច)</span></label>
+                        <input type="text" id="previousSchool" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="photo" data-text="photo">រូបថត <span class="optional-label" data-text="optional">(ស្រេច)</span></label>
+                        <input type="file" id="photo" class="form-control" accept="image/*">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent Details -->
+        <div id="parentCard" class="card hidden">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <span class="card-icon">👥</span>
+                    <span data-text="parentDetails">ព័ត៌មានឪពុកម្តាយ</span>
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="fatherName" data-text="fatherName">ឈ្មោះឪពុក</label>
+                        <input type="text" id="fatherName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="fatherPhone" data-text="fatherPhone">លេខទូរស័ព្ទឪពុក</label>
+                        <input type="tel" id="fatherPhone" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fatherJob" data-text="fatherJob">មុខរបរឪពុក</label>
+                        <input type="text" id="fatherJob" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="motherName" data-text="motherName">ឈ្មោះម្តាយ</label>
+                        <input type="text" id="motherName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="motherPhone" data-text="motherPhone">លេខទូរស័ព្ទម្តាយ</label>
+                        <input type="tel" id="motherPhone" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="motherJob" data-text="motherJob">មុខរបរម្តាយ</label>
+                        <input type="text" id="motherJob" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="parentProvince" data-text="province">ខេត្ត <span class="required">*</span></label>
+                        <input type="text" id="parentProvince" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parentDistrict" data-text="district">ស្រុក <span class="required">*</span></label>
+                        <input type="text" id="parentDistrict" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="parentCommune" data-text="commune">ឃុំ <span class="required">*</span></label>
+                        <input type="text" id="parentCommune" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parentVillage" data-text="village">ភូមិ <span class="required">*</span></label>
+                        <input type="text" id="parentVillage" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email" data-text="email">អ៊ីមែល <span class="required">*</span></label>
+                        <input type="email" id="email" class="form-control" required>
+                        <div class="error-message" data-text="emailError">សូមបញ្ចូលអ៊ីមែលត្រឹមត្រូវ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div id="submitSection" class="submit-section hidden">
+            <button type="button" id="submitBtn" class="submit-btn">
+                <span data-text="submitBtn">ផ្ញើទៅកម្មវិធី</span>
+            </button>
+        </div>
     </div>
-  </div>
-  
-  <script src="script.js"></script>
 </body>
 </html>
