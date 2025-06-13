@@ -344,27 +344,67 @@ document.getElementById('motherName').addEventListener('input', function() {
   }
 });
 
-// Form validation (unchanged)
+// Form validation (updated)
 function validateForm() {
   const kName = document.getElementById('kName').value.trim();
   const eName = document.getElementById('eName').value.trim();
   const gender = document.getElementById('gender').value;
   const dob = document.getElementById('dob').value;
-  if (!kName || !eName || !gender || !dob || !isKhmerText(kName) || !isEnglishText(eName)) return false;
+
+  // Student validation:
+  // 1. At least one of Khmer Name OR English Name is required.
+  // 2. Gender and Date of Birth are required.
+  // 3. If a name is provided, it must match its character type (Khmer or English).
+  if (
+      (!kName && !eName) || // Either kName or eName (or both) must be present
+      !gender ||
+      !dob ||
+      (kName && !isKhmerText(kName)) || // If kName is entered, validate it
+      (eName && !isEnglishText(eName))  // If eName is entered, validate it
+  ) {
+      return false;
+  }
 
   if (!hasRegisteredBefore) {
       const fatherName = document.getElementById('fatherName').value.trim();
+      const fatherPhone = document.getElementById('fatherPhone').value.trim(); // Get fatherPhone
       const motherName = document.getElementById('motherName').value.trim();
       const motherPhone = document.getElementById('motherPhone').value.trim();
       const province = document.getElementById('parentProvince').value.trim();
       const district = document.getElementById('parentDistrict').value.trim();
       const commune = document.getElementById('parentCommune').value.trim();
-      const village = document.getElementById('parentVillage').value.trim();
-      const email = document.getElementById('email').value.trim();
-      if (!fatherName && !motherName) return false;
-      if (motherName && !motherPhone) return false;
-      if (!province || !district || !commune ) return false;
+      const village = document.getElementById('parentVillage').value.trim(); // Optional
+      const email = document.getElementById('email').value.trim();           // Optional
+
+      // Parent validation:
+      // 1. At least one parent name (Father or Mother) is required
+      if (!fatherName && !motherName) {
+          return false;
+      }
+
+      // 2. Father's phone is required if Father's name is provided
+      if (fatherName && !fatherPhone) {
+          return false;
+      }
+
+      // 3. Mother's phone is required if Mother's name is provided
+      if (motherName && !motherPhone) {
+          return false;
+      }
+
+      // Address validation: Province, District, Commune are required. Village is optional.
+      if (!province || !district || !commune) {
+          return false;
+      }
+
+      // Email validation: Email is optional, but if provided, it must be valid.
+      if (email && !validateEmail(email)) {
+          return false;
+      }
+
+      // Father Job and Mother Job are optional and don't require specific validation checks here.
   }
+
   return true;
 }
 
